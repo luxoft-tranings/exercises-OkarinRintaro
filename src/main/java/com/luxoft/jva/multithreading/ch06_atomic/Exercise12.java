@@ -27,7 +27,73 @@ package com.luxoft.jva.multithreading.ch06_atomic;
 public class Exercise12 {
 
 	public static void main(String[] args) {
-		// your code goes here
+		Ball item = new Ball();
+        Thread Pi = new Thread(new Ping(item));
+        Thread Po = new Thread(new Pong(item));
+        Pi.start();
+        Po.start();
 	}
+}
 
+class Ping implements Runnable
+{
+    Ball item;
+    Ping(Ball b)
+    {
+        item = b;
+    }
+    @Override
+    public void run()
+    {
+        while(true)
+        {
+            if(!item.CheckStrike())
+            {
+                System.out.println("Ping");
+                try {
+             Thread.sleep(300);
+                }
+             catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+                item.isStrike = true;
+            }
+        }
+    }
+}
+
+class Pong implements Runnable
+{
+    Ball item;
+    
+    Pong(Ball b)
+    {
+        item = b;
+    }
+    @Override
+    public void run()
+    {
+        while(true)
+        {
+            if(item.CheckStrike())
+            {
+                System.out.println("Pong");
+                          try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+                item.isStrike = false;
+            }
+        }
+    }
+}
+
+class Ball
+{
+    volatile boolean isStrike = false;
+    boolean CheckStrike()
+    {
+        return isStrike;
+    }
 }
