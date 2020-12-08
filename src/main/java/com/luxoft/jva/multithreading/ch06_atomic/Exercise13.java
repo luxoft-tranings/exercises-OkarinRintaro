@@ -28,9 +28,74 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Exercise13 {
 
-	public static void main(String[] args) {
-		// your code goes here
-	}
-
+    public static void main(String[] args)
+    {
+        Ball item = new Ball();
+        Thread Pi = new Thread(new Ping(item));
+        Thread Po = new Thread(new Pong(item));
+        Pi.start();
+        Po.start();
+    }
 }
 
+class Ping implements Runnable
+{
+    Ball item;
+    Ping(Ball b)
+    {
+        item = b;
+    }
+    @Override
+    public void run()
+    {
+        int count = 0;
+        while(true)
+        {
+            count = item.ping.incrementAndGet();
+            ++count;
+                System.out.println("Ping");
+                          try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+                while(item.pong.get() != count)
+                {
+                }              
+        }
+    }
+}
+
+class Pong implements Runnable
+{
+    Ball item;
+    
+    Pong(Ball b)
+    {
+        item = b;
+    }
+    @Override
+    public void run()
+    {
+        int count = 0;
+        while(true)
+        {
+            while(item.ping.get() != count)
+            {
+            } 
+            count = item.pong.incrementAndGet();
+                System.out.println("Pong");
+                          try {
+                Thread.sleep(300);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}
+
+class Ball
+{
+    AtomicInteger ping = new AtomicInteger(-1);
+    AtomicInteger pong = new AtomicInteger(-1);
+}
